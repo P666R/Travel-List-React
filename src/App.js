@@ -32,7 +32,7 @@ function App() {
         onDeleteItem={handleDeleteItem}
         onToggleItem={handleToggleItem}
       />
-      <Stats />
+      <Stats items={items} />
     </div>
   );
 }
@@ -130,10 +130,30 @@ function Item({
 }
 
 //! Stats component (child to app & sibling)
-function Stats() {
+function Stats({ items }) {
+  //* early conditional return
+  if (!items.length)
+    return (
+      <p className="stats">
+        <em>Start adding some items to your packing list🧳</em>
+      </p>
+    );
+
+  //* derived state based on items piece of state from App
+  const numItems = items.length;
+  const numPacked = items.filter((item) => item.packed).length;
+  const percentage = Math.round((numPacked / numItems) * 100);
+
+  console.log(numItems, numPacked);
+
   return (
     <footer className="stats">
-      <em>👜 You have x items on your list, and you already packed x%</em>
+      <em>
+        {percentage !== 100
+          ? `👜 You have ${numItems} items on your list, and you already packed
+          ${numPacked} (${percentage}%)`
+          : `You got everything! Ready to go ✈️`}
+      </em>
     </footer>
   );
 }
