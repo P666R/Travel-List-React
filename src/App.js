@@ -23,6 +23,16 @@ function App() {
     );
   }
 
+  function handleClearList() {
+    if (items.length) {
+      const confirm = window.confirm(
+        "Are you sure you'd like to clear your list?"
+      );
+
+      if (confirm) setItems([]);
+    }
+  }
+
   return (
     <div className="app">
       <Logo />
@@ -31,6 +41,7 @@ function App() {
         items={items}
         onDeleteItem={handleDeleteItem}
         onToggleItem={handleToggleItem}
+        onClearList={handleClearList}
       />
       <Stats items={items} />
     </div>
@@ -92,7 +103,7 @@ function Form({ onAddItems }) {
 }
 
 //! PackingList component (child to app & sibling)
-function PackingList({ items, onDeleteItem, onToggleItem }) {
+function PackingList({ items, onDeleteItem, onToggleItem, onClearList }) {
   const [sortBy, setSortBy] = useState('input');
 
   let sortedItems;
@@ -130,6 +141,9 @@ function PackingList({ items, onDeleteItem, onToggleItem }) {
           <option value="packed">Sort by packed status</option>
         </select>
       </div>
+      <button disabled={items.length === 0} onClick={onClearList}>
+        Clear list
+      </button>
     </div>
   );
 }
@@ -168,8 +182,6 @@ function Stats({ items }) {
   const numItems = items.length;
   const numPacked = items.filter((item) => item.packed).length;
   const percentage = Math.round((numPacked / numItems) * 100);
-
-  console.log(numItems, numPacked);
 
   return (
     <footer className="stats">
